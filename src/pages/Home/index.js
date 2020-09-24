@@ -48,23 +48,28 @@ function Home() {
   }
 
   async function handleSave(){
+   //console.log(dadosForm.descricao)
+    if(dadosForm.descricao !== ''){
+      await api.post(`/games/cadastrar`, dadosForm)
+      .then(resp => {
+  
+          if(resp.status === 200){
+            OpenNotificationWithIcon('success',`${resp.data.msg}`,'')
+            setDadosForm({descricao:''})
+            getDados()
+          }else{
+            OpenNotificationWithIcon('error','Erro ao cadastrar!','')
+          }
+       
+  
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    }else{
+      OpenNotificationWithIcon('error','Campo esta vazio!','')
+    }
    
-    await api.post(`/games/cadastrar`, dadosForm)
-    .then(resp => {
-
-        if(resp.status === 200){
-          OpenNotificationWithIcon('success',`${resp.data.msg}`,'')
-          setDadosForm({descricao:''})
-          getDados()
-        }else{
-          OpenNotificationWithIcon('error','Erro ao cadastrar!','')
-        }
-     
-
-    })
-    .catch(err => {
-      console.log(err)
-    })
   }
 
   async function handleDelete(id){

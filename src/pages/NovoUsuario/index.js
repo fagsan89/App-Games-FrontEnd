@@ -15,6 +15,8 @@ function Cadastro(props) {
     password:''
   })
 
+  const [errorEmail, setErrorEmail] = useState(false)
+
   async function handleSubmit() {
     
     await api.post(`/usuario/cadastrar`, dadosForm)
@@ -32,6 +34,26 @@ function Cadastro(props) {
     setDadosForm({...dadosForm,
       [event.target.name] : event.target.value
     })
+  }
+
+  function validaEmail(e){
+
+    if(e.target.name === 'email'){
+
+      //Uso um comentario >>> eslint-disable-line <<<< na linha do comando para desabiltar o erro que ele da ao interpretar um regex
+      const pattern = /[a-zA-Z0-9]+[\.]?([a-zA-Z0-9]+)?[\@][a-z]{3,9}[\.][a-z]{2,5}/g; // eslint-disable-line
+
+      //verifica se esta deacordo com os padrao do regex
+      const result = pattern.test(e.target.value)
+
+      if(result === false){
+          setErrorEmail(true)
+      }else{
+        setErrorEmail(false)
+      }
+     
+  }
+    
   }
 
   return(
@@ -55,8 +77,10 @@ function Cadastro(props) {
             placeholder="Endereço de e-mail"
             onChange={handleChange}
             value={dadosForm.email}
+            onBlur={validaEmail}
             autoComplete="off"
           />
+          {errorEmail ? <span style={{color: "red"}}>*Por favor insira um e-mail válido</span> : ''}
           <input
             name="password"
             type="password"
